@@ -4,10 +4,9 @@ import { saveAs } from 'file-saver';
 import { PDFDocument, StandardFonts, rgb, grayscale, PDFName, PDFArray, PDFObject, PDFBool, PDFNumber,PageSizes, copyStringIntoBuffer, arrayAsString } from 'pdf-lib';
 import { fstat } from "fs";
 import { url } from "inspector";
-// const pdfjs = require('pdfjs-dist/webpack.js');
-import * as pdfjsLib from 'pdfjs-dist';
-pdfjsLib.GlobalWorkerOptions.workerSrc = require('../node_modules/pdfjs-dist/build/pdf.worker.entry.js');
-// pdfjsLib.GlobalWorkerOptions.workerSrc = '../../build/webpack/pdf.worker.bundle.js'
+import * as pdfjsLib from 'pdfjs-dist'
+/////////THIS THING TOOK SO MUCH TIME, DOESNT WORK IF YOU IMPORT FROM NODE MODULES
+pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.js`;
 export class PDFStampComponent implements ComponentFramework.StandardControl<IInputs, IOutputs> {
 	private qrCodeText : string;
 	private pdfBase64: string;
@@ -49,32 +48,6 @@ export class PDFStampComponent implements ComponentFramework.StandardControl<IIn
 		container.appendChild(this._container);
 		container.appendChild(this.stampButton);
 	};
-
-	// //////////////CONVERT TO READ-ONLY////////////////
-	// public getAcroForm = (pdfDoc: any) => {
-	// 	console.log(pdfDoc.catalog.lookup(PDFName.of('AcroForm')));
-	// 	return pdfDoc.catalog.lookup(PDFName.of('AcroForm'))
-	// };
-
-	// public getAcroFields = (pdfDoc: any) => {
-	// 	const acroForm:any  = this.getAcroForm(pdfDoc)
-	// 	if (!acroForm) return [];
-
-	// 	const fieldRefs = acroForm.lookupMaybe(PDFName.of('Fields'),PDFArray) ;
-	// 	if (!fieldRefs) return [];
-
-	// 	const fields = new Array(fieldRefs.size());
-	// 	for (let idx = 0, len = fieldRefs.size(); idx < len; idx++) {
-	// 		fields[idx] = fieldRefs.lookup(idx);
-	// 	};
-	// 	console.log("here 2");
-	// 	return fields;
-	// };
-
-	// public lockField = (acroField:any) => {
-	// 	acroField.set(PDFName.of('Ff'), PDFNumber.of(1 <<0 /*Read Only */));
-	// 	console.log("here 3");
-	// };
 	
 	//Stamp PDF function
 
@@ -102,7 +75,6 @@ export class PDFStampComponent implements ComponentFramework.StandardControl<IIn
 			}
 		}
 		
-	
 		var base64QrCode1 = "";
 		var base64QrCode2 = "";
 		QRCode.toDataURL(this.qrCodeText,qrCodeOpt1,function(err: Error, url:string) {
@@ -158,21 +130,11 @@ export class PDFStampComponent implements ComponentFramework.StandardControl<IIn
 			});
 		});
 		
-		// ///////TO READ-ONLY
-		// const acroForm = this.getAcroForm(pdfDoc);
-		// acroForm.set(PDFName.of('NeedAppearances'), PDFBool.True);
-
-		// const acroFields = this.getAcroFields(pdfDoc);
-		// acroFields.forEach(field => this.lockField(field));
-		
-		
 		// Serialize the PDFDocument to bytes
 		const pdfBytes = await pdfDoc.save();
-		console.log("here 1");
 		let arrImage: Array<{key: number, image: string}> = [];
 		let loadingTask = pdfjsLib.getDocument(pdfBytes);
 		loadingTask.promise.then((pdf: any) => {
-			console.log("here 2");
 			const pagesCount = pdf.numPages;
 			for (let i = 1; i < pagesCount + 1; i++) {
 				pdf.getPage(i).then((page: any) => {
@@ -186,10 +148,9 @@ export class PDFStampComponent implements ComponentFramework.StandardControl<IIn
 						viewport: viewport
 					};
 					page.render(renderContext).promise.then(() => {
-						console.log("here 3");
 						let img = tempCanvas.toDataURL("image/jpeg", 1);
 						arrImage.push({key: i,image: img});
-						if(arrImage.length === pagesCount - 1){
+						if(arrImage.length === pagesCount){
 							this.toPDFImage(arrImage,width,height);
 						}
 					});
@@ -201,7 +162,6 @@ export class PDFStampComponent implements ComponentFramework.StandardControl<IIn
 	////TURN PDF INTO IMAGE///////////
 	public toPDFImage = async(pdfImages: Array<{key: number, image: string}>,pdfWidth:number,pdfHeight:number) => {
 		const pdfDoc = await PDFDocument.create();
-		console.log("here 4");
 		const sortedArray = pdfImages.sort((a,b) => a.key - b.key);
 		for (let i in sortedArray){
 			let page = pdfDoc.addPage([pdfWidth, pdfHeight]);
@@ -213,11 +173,8 @@ export class PDFStampComponent implements ComponentFramework.StandardControl<IIn
 				height: pdfHeight
 			});
 		}
-		
-
-		
+	
 		const pdfBytes = await pdfDoc.save();
-		console.log("here 5");
 
 		//Download
 		let blob = new Blob([pdfBytes], { type: "application/pdf" });

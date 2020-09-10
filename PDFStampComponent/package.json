@@ -11,13 +11,13 @@
   "dependencies": {
     "@types/jspdf": "^1.3.3",
     "@types/node": "^10.12.18",
+    "@types/pdfjs-dist": "^2.1.5",
     "@types/powerapps-component-framework": "^1.2.0",
     "@types/qrcode": "^1.3.4",
     "file-saver": "^2.0.2",
     "pdf-lib": "^1.8.0",
-    "qrcode": "^1.4.4",
-    "pdfjs-dist": "^2.4.456",
-    "@types/pdfjs-dist": "^2.1.5"
+    "pdfjs-dist": "^2.6.347",
+    "qrcode": "^1.4.4"
   },
   "devDependencies": {
     "@types/file-saver": "^2.0.1",
