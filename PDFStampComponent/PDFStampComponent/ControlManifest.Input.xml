@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <manifest>
-  <control namespace="PDFStamp" constructor="PDFStampComponent" version="0.0.28" display-name-key="PDFStampComponent" description-key="PDFStampComponent description" control-type="standard">
+  <control namespace="PDFStamp" constructor="PDFStampComponent" version="0.0.38" display-name-key="PDFStampComponent" description-key="PDFStampComponent description" control-type="standard">
     <!-- property node identifies a specific, configurable piece of data that the control expects from CDS -->
     <property name="qrCodeContext" display-name-key="Property_Display_Key" description-key="Enter the text you want QR code to display" of-type="SingleLine.Text" usage="bound" required="true" />
     <property name="stampedFileName" display-name-key="Property_Display_Key" description-key="Enter file name" of-type="SingleLine.Text" usage="bound" required="true" default-value ="test" />
@@ -11,7 +11,15 @@
     <property name="btnBorderRadius" display-name-key="Property_Display_Key" description-key="Styling" of-type="SingleLine.Text" usage="bound" required="true" />
     <property name="btnFontSize" display-name-key="Property_Display_Key" description-key="Styling" of-type="SingleLine.Text" usage="bound" required="true" />
     <property name="btnText" display-name-key="Property_Display_Key" description-key="Styling" of-type="SingleLine.Text" usage="bound" required="true" default-value= "Stamp PDF" />
+    <property name="btnX" display-name-key="Property_Display_Key" description-key="Styling" of-type="SingleLine.Text" usage="bound" required="true" default-value= "0" />
+    <property name="btnY" display-name-key="Property_Display_Key" description-key="Styling" of-type="SingleLine.Text" usage="bound" required="true" default-value= "0" />
+    <property name="LoaderImage" display-name-key="Property_Display_Key" description-key="Styling" of-type="SingleLine.Text" usage="bound" required="true" />
+    <property name="boolLoader" display-name-key="Property_Display_Key" description-key="Styling" of-type="TwoOptions" usage="bound" required="true" default-value= "false" />
+    <property name="ImageScale" display-name-key="Property_Display_Key" description-key="Styling" of-type="Decimal" usage="bound" required="true" />
     <property name="notifyChanged" display-name-key="Property_Display_Key" description-key="Styling" of-type="SingleLine.Text" usage="bound" required="true" default-value= "Stamp PDF" />
+
+    
+
     <!-- 
       Property node's of-type attribute can be of-type-group attribute. 
       Example:
