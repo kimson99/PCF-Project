@@ -63,14 +63,14 @@ export class PDFStampComponent implements ComponentFramework.StandardControl<IIn
 	//Stamp PDF function
 
 	public pdfStamp = async() => {
+		
 		this.stampButton.style.display = "none";
 		this._loader.style.display = "inline";
 		//Fetch the pdf from base64 string
 		const inputPdfBytes = this.pdfBase64;
-	
 		//Load PDF
 		const pdfDoc = await PDFDocument.load(inputPdfBytes);
-		
+		console.log("haha2")
 		//Get the QR code
 		let qrCodeOpt1 = {
 			width: 200,
@@ -108,6 +108,7 @@ export class PDFStampComponent implements ComponentFramework.StandardControl<IIn
 		//Get pages from the pdf
 		const pages = pdfDoc.getPages();
 		let {width,height} = pages[0].getSize();
+		
 		//Stamp image on page
 		pages.forEach(page =>{
 			//Draw dimmed QRCode in center
@@ -148,7 +149,7 @@ export class PDFStampComponent implements ComponentFramework.StandardControl<IIn
 		let loadingTask = pdfjsLib.getDocument(pdfBytes);
 		loadingTask.promise.then((pdf: any) => {
 			const pagesCount = pdf.numPages;
-			for (let i = 1; i < pagesCount + 1; i++) {
+			for (let i = 1; i < pagesCount + 1; i++) {	
 				pdf.getPage(i).then((page: any) => {
 					let tempCanvas = document.createElement("canvas");
 					let tempCtx = tempCanvas.getContext("2d");
@@ -175,6 +176,7 @@ export class PDFStampComponent implements ComponentFramework.StandardControl<IIn
 	public toPDFImage = async(pdfImages: Array<{key: number, image: string}>,pdfWidth:number,pdfHeight:number) => {
 		const pdfDoc = await PDFDocument.create();
 		const sortedArray = pdfImages.sort((a,b) => a.key - b.key);
+		console.log("haha1")
 		for (let i in sortedArray){
 			let page = pdfDoc.addPage([pdfWidth, pdfHeight]);
 			let stampOnPNG = await pdfDoc.embedJpg(sortedArray[i].image);
@@ -187,7 +189,6 @@ export class PDFStampComponent implements ComponentFramework.StandardControl<IIn
 		}
 	
 		const pdfBytes = await pdfDoc.save();
-
 		//Download
 		let blob = new Blob([pdfBytes], { type: "application/pdf" });
 		saveAs(blob, this.fileName + ".pdf");
