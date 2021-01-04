@@ -176,7 +176,6 @@ export class PDFStampComponent implements ComponentFramework.StandardControl<IIn
 	public toPDFImage = async(pdfImages: Array<{key: number, image: string}>,pdfWidth:number,pdfHeight:number) => {
 		const pdfDoc = await PDFDocument.create();
 		const sortedArray = pdfImages.sort((a,b) => a.key - b.key);
-		console.log("haha1")
 		for (let i in sortedArray){
 			let page = pdfDoc.addPage([pdfWidth, pdfHeight]);
 			let stampOnPNG = await pdfDoc.embedJpg(sortedArray[i].image);
