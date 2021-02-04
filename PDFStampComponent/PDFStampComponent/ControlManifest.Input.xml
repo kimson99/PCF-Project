@@ -16,6 +16,7 @@
     <property name="LoaderImage" display-name-key="Property_Display_Key" description-key="Styling" of-type="SingleLine.Text" usage="bound" required="true" />
     <property name="boolLoader" display-name-key="Property_Display_Key" description-key="Styling" of-type="TwoOptions" usage="bound" required="true" default-value= "false" />
     <property name="ImageScale" display-name-key="Property_Display_Key" description-key="Styling" of-type="Decimal" usage="bound" required="true" />
+    <property name="middleStamp" display-name-key="Property_Display_Key" description-key="Styling" of-type="TwoOptions" usage="bound" required="true" />
     <property name="notifyChanged" display-name-key="Property_Display_Key" description-key="Styling" of-type="SingleLine.Text" usage="bound" required="true" default-value= "Stamp PDF" />
 
     

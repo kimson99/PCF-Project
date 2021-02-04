@@ -21,6 +21,7 @@ export class PDFStampComponent implements ComponentFramework.StandardControl<IIn
 	private _notifyOutputChanged: () => void;
 	private _container: HTMLDivElement;
 	private boolLoader: boolean;
+	private middleStamp: boolean;
 	constructor()
 	{
 
@@ -38,6 +39,7 @@ export class PDFStampComponent implements ComponentFramework.StandardControl<IIn
 		this._loader.style.height = "900px";
 		this._loader.style.display = "none";
 		this.pdfBase64 = context.parameters.pdfBase64.raw? context.parameters.pdfBase64.raw : "";
+		this.middleStamp = context.parameters.middleStamp.raw;
 		this.securityCode = context.parameters.securityCode.raw? context.parameters.securityCode.raw : "";
 		this.qrCodeText = context.parameters.qrCodeContext.raw? context.parameters.qrCodeContext.raw : "";
 		this.fileName = context.parameters.stampedFileName.raw? context.parameters.stampedFileName.raw : "";
@@ -111,37 +113,40 @@ export class PDFStampComponent implements ComponentFramework.StandardControl<IIn
 		
 		//Stamp image on page
 		pages.forEach(page =>{
-			//Draw dimmed QRCode in center
-			page.drawImage(pngQrCode1, {
-				x: (page.getWidth() - pngDims1.width) / 2,
-				y: (page.getHeight() - pngDims1.height) / 2,
-				width: pngDims1.width,
-				height: pngDims1.height,
+            //Draw QRCode on right corner
+            page.drawImage(pngQrCode2, {
+                x: page.getWidth() - pngDims2.width - 8,
+                y: page.getHeight() - pngDims2.height - 8,
+                width: pngDims2.width,
+                height: pngDims2.height,
 			});
-
-			//Draw QRCode on right corner
-			page.drawImage(pngQrCode2, {
-			x: page.getWidth() - pngDims2.width - 8,
-			y: page.getHeight() - pngDims2.height - 8,
-			width: pngDims2.width,
-			height: pngDims2.height,
-			});
-
-			//Draw text for QR code in center
-			page.drawText(this.securityCode, {
-			x: page.getWidth() /2 - 20,
-			y: (page.getHeight() - pngDims1.height) / 2 + 4,
-			size: 16,
-			opacity: 0.2,
-			});
-
+			
 			//Draw text for QR code on right corner
-			page.drawText(this.securityCode, {
-			x: page.getWidth() - pngDims2.width - 4,
-			y: (page.getHeight() - pngDims2.height) - 10,
-			size: 8,
-			});
-		});
+            page.drawText(this.securityCode, {
+                x: page.getWidth() - pngDims2.width - 4,
+                y: page.getHeight() - pngDims2.height - 10,
+                size: 8,
+            });
+
+           
+            if (this.middleStamp) {
+				console.log(this.middleStamp)
+				 //Draw text for QR code in center
+                page.drawText(this.securityCode, {
+                    x: page.getWidth() / 2 - 20,
+                    y: (page.getHeight() - pngDims1.height) / 2 + 4,
+                    size: 16,
+                    opacity: 0.2,
+                });
+                //Draw dimmed QRCode in center
+                page.drawImage(pngQrCode1, {
+                    x: (page.getWidth() - pngDims1.width) / 2,
+                    y: (page.getHeight() - pngDims1.height) / 2,
+                    width: pngDims1.width,
+                    height: pngDims1.height,
+                });
+            }
+        });
 		
 		// Serialize the PDFDocument to bytes
 		const pdfBytes = await pdfDoc.save();
@@ -209,6 +214,7 @@ export class PDFStampComponent implements ComponentFramework.StandardControl<IIn
 	public updateView(context: ComponentFramework.Context<IInputs>): void
 	{
 		this.pdfBase64 = context.parameters.pdfBase64.raw? context.parameters.pdfBase64.raw : "";
+		this.middleStamp = context.parameters.middleStamp.raw;
 		this.securityCode = context.parameters.securityCode.raw? context.parameters.securityCode.raw : "";
 		this.qrCodeText = context.parameters.qrCodeContext.raw? context.parameters.qrCodeContext.raw : "";
 		this.fileName = context.parameters.stampedFileName.raw? context.parameters.stampedFileName.raw : "";
