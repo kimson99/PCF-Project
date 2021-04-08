@@ -22,6 +22,7 @@ export class PDFStampComponent implements ComponentFramework.StandardControl<IIn
 	private _container: HTMLDivElement;
 	private boolLoader: boolean;
 	private middleStamp: boolean;
+  private stampSize: number;
 	constructor()
 	{
 
@@ -44,6 +45,7 @@ export class PDFStampComponent implements ComponentFramework.StandardControl<IIn
 		this.qrCodeText = context.parameters.qrCodeContext.raw? context.parameters.qrCodeContext.raw : "";
 		this.fileName = context.parameters.stampedFileName.raw? context.parameters.stampedFileName.raw : "";
 		this.imageScale = context.parameters.ImageScale.raw? context.parameters.ImageScale.raw : 1.2;
+    this.stampSize = context.parameters.stampSize.raw? context.parameters.stampSize.raw : 0.4;
 		this._notifyOutputChanged = notifyOutputChanged;
 		this.stampButton = document.createElement("button");
 		this.stampButton.addEventListener("click",this.onButtonClick.bind(this));
@@ -72,7 +74,6 @@ export class PDFStampComponent implements ComponentFramework.StandardControl<IIn
 		const inputPdfBytes = this.pdfBase64;
 		//Load PDF
 		const pdfDoc = await PDFDocument.load(inputPdfBytes);
-		console.log("haha2")
 		//Get the QR code
 		let qrCodeOpt1 = {
 			width: 200,
@@ -98,14 +99,13 @@ export class PDFStampComponent implements ComponentFramework.StandardControl<IIn
 			base64QrCode2 = url
 		});
 		
-		// console.log(base64QrCode2);
 		//Embed image qr code
 		const pngQrCode1 = await pdfDoc.embedPng(base64QrCode1);
 		const pngQrCode2 = await pdfDoc.embedPng(base64QrCode2);
 		
 		// Get the width/height of the PNG image scaled down to 50% of its original size
 		const pngDims1 = pngQrCode1.scale(1);
-		const pngDims2 = pngQrCode2.scale(0.4);
+		const pngDims2 = pngQrCode2.scale(this.stampSize);
 		
 		//Get pages from the pdf
 		const pages = pdfDoc.getPages();
@@ -227,6 +227,7 @@ export class PDFStampComponent implements ComponentFramework.StandardControl<IIn
 		this.stampButton.innerHTML = context.parameters.btnText.raw? context.parameters.btnText.raw : "";
 		this.stampButton.style.top = (context.parameters.btnY.raw? context.parameters.btnY.raw: "0") + "px";
 		this.stampButton.style.left = (context.parameters.btnX.raw? context.parameters.btnX.raw: "0") + "px";
+    this.stampSize = context.parameters.stampSize.raw? context.parameters.stampSize.raw : 0.4;
 		this._loader.src = context.parameters.LoaderImage.raw? context.parameters.LoaderImage.raw : "";
 	}
 
